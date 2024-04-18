@@ -38,31 +38,17 @@ struct Node
 bool compare_x(const point &a, const point &b){ return  a.x < b.x; }
 bool compare_y(const point &a, const point &b){ return  a.y < b.y; }
 
-// int min(const float a, const float b)
-// {
-//     if (a > b) return b;
-//     return a;
-// }
-
-// int max(const float a, const float b)
-// {
-//     if (a < b) return b;
-//     return a;
-// }
-
 // get median
 void find_median(point *pointlist, unsigned int size, bool x)
 {
     if (size % 2 == 0) --size;
     if (x)
     {
-        std::nth_element(pointlist, pointlist + size / 2, pointlist + (size - 1), compare_x); 
-        // return pointlist[size / 2].x;
+        std::nth_element(pointlist, pointlist + size / 2, pointlist + (size - 1), compare_x);
     }
     else
     {
-        std::nth_element(pointlist, pointlist + size / 2, pointlist + (size - 1), compare_y);    
-        // return pointlist[size / 2].y;
+        std::nth_element(pointlist, pointlist + size / 2, pointlist + (size - 1), compare_y);
     }
 } 
 
@@ -92,7 +78,7 @@ Node *kdtree(point *pointlist, int right, int depth, const unsigned int left_idx
         return new_node;        
     }
     
-        // determine divide dimension (x or y)
+    // determine divide dimension (x or y)
     int axis = depth % 2;
     
     // make a new node
