@@ -133,53 +133,6 @@ Node *kdtree(point *pointlist, int right, int depth, const unsigned int left_idx
     new_node->rightChild = kdtree(pointlist + median + 1, right - (median + 1), depth + 1, median_idx + 1, right_idx);
     new_node->leftChild = kdtree(pointlist, median - 1, depth + 1, left_idx, median_idx - 1);
     
-    // if (axis == 0)
-    // {        
-    //     if (new_node->rightChild != NULL && new_node->leftChild != NULL)
-    //     {
-    //         new_node->upmost = max(new_node->rightChild->upmost, new_node->leftChild->upmost);
-    //         new_node->downmost = min(new_node->rightChild->downmost, new_node->leftChild->downmost);            
-    //     }
-    //     else if (new_node->rightChild != NULL)
-    //     {
-    //         new_node->upmost = new_node->rightChild->upmost;
-    //         new_node->downmost = new_node->rightChild->downmost;            
-    //     }
-    //     else if (new_node->leftChild != NULL)
-    //     {
-    //         new_node->upmost = new_node->leftChild->upmost;
-    //         new_node->downmost = new_node->leftChild->downmost;
-    //     }
-    //     else
-    //     {
-    //         new_node->upmost = new_node->location.y;
-    //         new_node->downmost = new_node->location.y;
-    //     }        
-    // }
-    // else
-    // {        
-    //     if (new_node->rightChild != NULL && new_node->leftChild != NULL)
-    //     {
-    //         new_node->rightmost = max(new_node->rightChild->rightmost,new_node->leftChild->rightmost);
-    //         new_node->leftmost = min(new_node->rightChild->leftmost,new_node->leftChild->leftmost);            
-    //     }
-    //     else if (new_node->rightChild != NULL)
-    //     {
-    //         new_node->rightmost = new_node->rightChild->rightmost;
-    //         new_node->leftmost = new_node->rightChild->leftmost;            
-    //     }
-    //     else if (new_node->leftChild != NULL)
-    //     {
-    //         new_node->rightmost = new_node->leftChild->rightmost;
-    //         new_node->leftmost = new_node->leftChild->leftmost;
-    //     }
-    //     else
-    //     {
-    //         new_node->rightmost = new_node->location.x;
-    //         new_node->leftmost = new_node->location.x;
-    //     }        
-    // }
-    
     return new_node;
 }
 
@@ -266,7 +219,7 @@ Node *binary_tree(point *pointlist, int right, const unsigned int left_idx, cons
 }
 
 // check fully covered
-int is_contained(Node *region, const float sx, const float tx, const float sy, const float ty)
+int is_contained(const Node *region, const float sx, const float tx, const float sy, const float ty)
 {    
     if (region->leftmost < sx || region->rightmost > tx || region->upmost > ty || region->downmost < sy) return 0;    
     return 1;
@@ -314,7 +267,7 @@ void SearchKDtree(Node *v, std::vector<std::pair<Node*, bool>> &result, const fl
 }
 
 // range counting
-void CountKDtree(Node *v, unsigned int &count, const float sx, const float tx, const float sy, const float ty)
+void CountKDtree(const Node *v, unsigned int &count, const float sx, const float tx, const float sy, const float ty)
 {
     // disjoint case    
     if (v->rightmost < sx || v->leftmost > tx || v->downmost > ty || v->upmost < sy) return;
@@ -330,6 +283,7 @@ void CountKDtree(Node *v, unsigned int &count, const float sx, const float tx, c
     }
     
     // intermediate node case
+    if (sx <= v->location.x && sy <= v->location.y && tx >= v->location.x && ty >= v->location.y) ++count;
     if (v->leftChild != NULL)
     {        
         if (is_contained(v->leftChild, sx, tx, sy, ty))
