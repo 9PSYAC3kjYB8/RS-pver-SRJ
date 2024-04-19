@@ -20,6 +20,7 @@
 unsigned int dataset_id = 0;
 std::vector<std::pair<float, float>> dataset, dataset_a, dataset_b;
 float scalability = 0;
+float size_ratio = 0;
 
 // sample size
 unsigned int sample_size = 0;
@@ -70,6 +71,7 @@ void input_parameter()
     std::ifstream ifs_sample_size("parameter/sample_size.txt");
     std::ifstream ifs_range("parameter/range.txt");
     std::ifstream ifs_scalability("parameter/scalability.txt");
+    std::ifstream ifs_size_ratio("parameter/size_ratio.txt");
 
     if (ifs_dataset_id.fail())
     {
@@ -91,11 +93,17 @@ void input_parameter()
         std::cout << " scalability.txt does not exist." << std::endl;
         std::exit(0);
     }
+    if (ifs_size_ratio.fail())
+    {
+        std::cout << " size_ratio.txt does not exist." << std::endl;
+        std::exit(0);
+    }
 
     while (!ifs_dataset_id.eof()) { ifs_dataset_id >> dataset_id; }
     while (!ifs_sample_size.eof()) { ifs_sample_size >> sample_size; }
     while (!ifs_range.eof()) { ifs_range >> range; }
     while (!ifs_scalability.eof()) { ifs_scalability >> scalability; }
+    while (!ifs_size_ratio.eof()) { ifs_size_ratio >> size_ratio; }
 }
 
 // data input
@@ -190,7 +198,7 @@ void input_data()
     // divide into two sets
     for (unsigned int i = 0; i < size; ++i)
     {
-        if (rnd_prob(mt) <= 0.5)
+        if (rnd_prob(mt) <= size_ratio)
         {
             dataset_a.push_back(dataset[i]);
         }
@@ -212,6 +220,7 @@ void input_data()
     std::cout << " -------------------------------\n";
     std::cout << " dataset ID: " << dataset_id << "\n";
     std::cout << " scalability [%]: " << scalability * 100 << "\n";
+    std::cout << " size ratio (dataset_a / (dataset_a + dataset_b)) [%]: " << size_ratio * 100 << "\n";
     std::cout << " cardinality_a: " << dataset_a.size() << "\n";
     std::cout << " cardinality_b: " << dataset_b.size() << "\n";
     std::cout << " sample size: " << sample_size << "\n";
@@ -229,7 +238,7 @@ void output_result()
     if (dataset_id == 2) file_name += "2_IMIS/";
     if (dataset_id == 3) file_name += "3_NYC/";
     if (dataset_id == 4) file_name += "4_Foursquare/";
-    file_name += "id(" + std::to_string(dataset_id) + ")_range(" + std::to_string(range) + ")_sample-size(" + std::to_string(sample_size) + ")_scalability(" + std::to_string(scalability) + ").csv";
+    file_name += "id(" + std::to_string(dataset_id) + ")_range(" + std::to_string(range) + ")_sample-size(" + std::to_string(sample_size) + ")_scalability(" + std::to_string(scalability) + ")_size-ratio(" + std::to_string(size_ratio) + ").csv";
 
     std::ofstream file;
     file.open(file_name.c_str(), std::ios::out | std::ios::app);
